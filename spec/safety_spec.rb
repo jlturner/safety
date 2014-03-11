@@ -54,8 +54,10 @@ describe Safety, " basic getters and setters for 'safe' declared attributes" do
   end
 
   it "should throw an exception if reading an attribute that is not set" do
-    t = Test.new
-    #t.notset
+    expect {
+      t = Test.new
+      t.notset # BOMB!
+    }.to raise_error(TypeError)
   end
 
   it "should throw an exception if setting an attribute to a value with a not matching type" do
@@ -81,5 +83,13 @@ describe Safety, " basic getters and setters for 'safe' declared attributes" do
 
     t1.count.should eq(123)
     t2.count.should eq(456)
+  end
+
+  it "should not be setting variables on the singleton class" do
+    expect {
+      t = Test.new
+      t.count = 666
+      Test.count # BOMB!
+    }.to raise_error(NoMethodError)
   end
 end
